@@ -2,13 +2,16 @@
   - Mission planner, mavlink, sitl, etcs, wire shark
 - Software technologies? pymavlink, python gui?, react?
 - Software design?
-- flight mode investigation
-   - tuning investigation
+- tuning investigation (very high level and will take significant time)
 - Plan mvp
+
+BARE MINIMUM TO START DEVELOPMENT OF REGULAR FEATURES
 - Get a custom script sending messages to sitl
  - Add an example test script
 - Get mavproxy working with custom script and gcs
-- Get basic GUI hooked up to test script. This should now be a simulated 
+- Get basic GUI hooked up to test script. This should now be a simulated end to end 
+END BARE MINIMUM TO START DEVELOPMENT OF REGULAR FEATURES
+
 - Implement flight monitoring. This will unblock alot of things below
 - Start implementing flight envelop
 - Start implementing arducopter failsafes
@@ -21,3 +24,4 @@ Done:
   - Emergency recovery systems
   - flight envelope
   - situational awarness
+- flight mode investigation
