@@ -3,8 +3,9 @@ import os
 import time
 import pytest
 
-script_dir = os.path.abspath('./../..')
-sys.path.append(script_dir)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, "../.."))
+sys.path.insert(0, project_root)
 
 from Scripts.core.vehicle import *
 
