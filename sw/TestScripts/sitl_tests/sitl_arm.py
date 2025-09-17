@@ -1,16 +1,19 @@
 import sys
 import os
 import time
+import pytest
 
 script_dir = os.path.abspath('./../..')
 sys.path.append(script_dir)
 
-import Scripts.core.initialize as initialize
-import Scripts.core.arm as arm
+from Scripts.core.vehicle import *
 
-vehicle_connection = initialize.connect_to_vehicle('udpin:172.25.176.1:14550')
+# SITL tests rely on valid connection to a vehicle
+@pytest.fixture()
+def vehicle():
+    vehicle = Vehicle()
+    yield vehicle
 
-arm.arm(vehicle_connection)
-time.sleep(3)
-arm.disarm(vehicle_connection)
-
+def test_arm_disarm_vehicle(vehicle):
+    assert vehicle.arm_vehicle(), "Command ACK is true"
+    assert vehicle.disarm_vehicle(), "Command ACK is true"

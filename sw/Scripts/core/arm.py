@@ -1,7 +1,7 @@
 from pymavlink import mavutil
 
-def arm(vehicle_connection):
-    # PROMISES: The vehicle will be armed
+def arm(vehicle_connection) -> bool:
+    # PROMISES: Returns true if command is acked
     # REQUIRES: Vehicle connection
     try:
         vehicle_connection.mav.command_long_send( # Specify COMMAND_LONG
@@ -18,13 +18,16 @@ def arm(vehicle_connection):
             param7=0 # Param 7 - Unused, set to zero to populate all 7 parameters
         )
 
-        msg = vehicle_connection.recv_match(type='COMMAND_ACK', blocking=True, timeout=5) # Print ACK to confirm successful execution
+        msg = vehicle_connection.recv_match(type='COMMAND_ACK', blocking=True, timeout=3) # Print ACK to confirm successful execution
         print(msg)
+        return msg and msg.command == 400 and msg.result == 0
+
     except Exception as e:
         print(f"Error in function: arm() from file: General/Operations/arm.py -> {e}")
+        return False
 
-def disarm(vehicle_connection):
-    # PROMISES: The vehicle will be disarmed
+def disarm(vehicle_connection) -> bool:
+    # PROMISES: Returns true if command is acked
     # REQUIRES: Vehicle connection
     try:
         vehicle_connection.mav.command_long_send( # Specify COMMAND_LONG
@@ -41,7 +44,10 @@ def disarm(vehicle_connection):
             param7=0 # Param 7 - Unused, set to zero to populate all 7 parameters
         )
 
-        msg = vehicle_connection.recv_match(type='COMMAND_ACK', blocking=True, timeout=5) # Print command ACK to confirm successful execution
+        msg = vehicle_connection.recv_match(type='COMMAND_ACK', blocking=True, timeout=3) # Print command ACK to confirm successful execution
         print(msg)
+        return msg and msg.command == 400 and msg.result == 0
+
     except Exception as e:
         print(f"Error in function: disarm() from file: General/Operations/arm.py -> {e}")
+        return False
