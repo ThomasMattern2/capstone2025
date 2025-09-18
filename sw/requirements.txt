@@ -1,0 +1,6 @@
+pymavlink>=2.4.15
+Flask>=2.3.0
+Flask-Cors>=3.0.10
+Flask-SocketIO>=5.5.1
+python-socketio>=5.9.0
+requests>=2.31.0
