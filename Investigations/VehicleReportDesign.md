@@ -64,3 +64,21 @@
     - Little experience
     - Debugging
     - Thread safety
+
+## Path forward
+- The async producer/consumer pattern provides the best performance, so to meet speed goals, this is the design we will go after.
+- Producer thread: Vehicle interfaces that stream telemetry into queues.
+- Multiplex thread: Take producer thread and add to various consumer queues and also update the shared state
+- Consumer threads:
+  - Failsafe detector
+  - Logger
+  - Visualization engine
+  - Shared State: Maintains the most recent telemetry for quick access.
+
+- This design will allow the system to:
+  - Stay performant with fresh telemetry.
+  - Allow for multiple vehicles in the future.
+  - Keep logs and graphs synchronized with state of drone.
+  - Provide a clean and extendable architecture for future features.
+
+- This meshes well with our web sockets as a queue will be made for the websocket to send to the react
