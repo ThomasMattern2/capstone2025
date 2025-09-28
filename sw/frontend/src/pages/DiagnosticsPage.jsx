@@ -7,6 +7,7 @@ export default function Diagnostics() {
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Current Diagnostics</h2>
+
       <Bubbles />
       <MultiTrackPlot />
     </div>

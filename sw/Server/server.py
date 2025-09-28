@@ -15,7 +15,7 @@ from Scripts.core.vehicle import *
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.config['key'] = 'code'
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # probably move this out of server logic
 vehicle = Vehicle()
@@ -34,7 +34,7 @@ def disarm_vehicle():
 def telemetry_thread():
     while True:
         msg_type = "GPS_RAW_INT"
-        data = {"roll": 10, "pitch": 10, "yaw": 10}
+        data = {"roll": 10, "pitch": 12, "yaw": 10, "altitude": 13}
 
         if data:
             socketio.emit("vehicle_state", {"type": msg_type, "data": data})
