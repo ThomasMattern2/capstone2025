@@ -5,6 +5,7 @@ import time
 import threading
 import os
 import sys
+import asyncio
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, ".."))
@@ -14,34 +15,37 @@ from Scripts.core.vehicle import *
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-app.config['key'] = 'code'
+app.config["key"] = "code"
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# probably move this out of server logic
-vehicle = Vehicle()
+vehicle = Vehicle(socketio)
 
-@app.route('/arm', methods=['POST'])
+
+@app.route("/arm", methods=["POST"])
 def arm_vehicle():
     vehicle.arm_vehicle()
-    return jsonify({'message': 'Vehicle armed successfully'}), 200
+    return jsonify({"message": "Vehicle armed successfully"}), 200
 
-@app.route('/disarm', methods=['POST'])
+
+@app.route("/disarm", methods=["POST"])
 def disarm_vehicle():
     vehicle.disarm_vehicle()
-    return jsonify({'message': 'Vehicle disarmed successfully'}), 200
+    return jsonify({"message": "Vehicle disarmed successfully"}), 200
 
 
-def telemetry_thread():
-    while True:
-        msg_type = "GPS_RAW_INT"
-        data = {"roll": 10, "pitch": 12, "yaw": 10, "altitude": 13}
+def start_vehicle_loop():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-        if data:
-            socketio.emit("vehicle_state", {"type": msg_type, "data": data})
+    vehicle.start_mavlink_thread(loop)
 
-        time.sleep(0.1)
+    loop.create_task(vehicle.multiplexing_layer(loop))
+    loop.create_task(vehicle.telemetry_consumer())
 
-threading.Thread(target=telemetry_thread, daemon=True).start()
+    loop.run_forever()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
+    threading.Thread(target=start_vehicle_loop, daemon=True).start()
+
     socketio.run(app, host="0.0.0.0", port=5000)
