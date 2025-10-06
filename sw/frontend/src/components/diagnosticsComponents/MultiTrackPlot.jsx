@@ -10,7 +10,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-
 // Sample data: time vs multiple tracks
 const sampleData = [
   { time: 0, altitude: 100, speed: 20, battery: 95 },
@@ -34,6 +33,7 @@ export default function MultiTrackPlot({ data = sampleData }) {
   return (
     <div style={{ width: "100%", height: 400 }}>
       {/* Track toggle buttons */}
+      <h2 style={{ textAlign: "center", marginBottom: 20 }}>Historic Data</h2>
       <div style={{ marginBottom: 10 }}>
         {Object.keys(visibleTracks).map((track) => (
           <button
@@ -55,13 +55,23 @@ export default function MultiTrackPlot({ data = sampleData }) {
       </div>
 
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 20, right: 50, left: 20, bottom: 20 }}>
+        <LineChart
+          data={data}
+          margin={{ top: 20, right: 50, left: 20, bottom: 20 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" label={{ value: "Time", position: "insideBottom", offset: -10 }} />
+          <XAxis
+            dataKey="time"
+            label={{ value: "Time", position: "insideBottom", offset: -10 }}
+          />
           <YAxis
             yAxisId="left"
             orientation="left"
-            label={{ value: "Altitude / Battery", angle: -90, position: "insideLeft" }}
+            label={{
+              value: "Altitude / Battery",
+              angle: -90,
+              position: "insideLeft",
+            }}
           />
           <YAxis
             yAxisId="right"
@@ -70,16 +80,31 @@ export default function MultiTrackPlot({ data = sampleData }) {
           />
           <Tooltip />
           <Legend />
-          
+
           {/* Lines */}
           {visibleTracks.altitude && (
-            <Line yAxisId="left" type="monotone" dataKey="altitude" stroke="#8884d8" />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="altitude"
+              stroke="#8884d8"
+            />
           )}
           {visibleTracks.speed && (
-            <Line yAxisId="right" type="monotone" dataKey="speed" stroke="#82ca9d" />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="speed"
+              stroke="#82ca9d"
+            />
           )}
           {visibleTracks.battery && (
-            <Line yAxisId="left" type="monotone" dataKey="battery" stroke="#ffc658" />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="battery"
+              stroke="#ffc658"
+            />
           )}
         </LineChart>
       </ResponsiveContainer>

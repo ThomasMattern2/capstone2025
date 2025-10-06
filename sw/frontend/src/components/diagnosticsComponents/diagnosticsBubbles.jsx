@@ -1,32 +1,118 @@
-import React, { useState } from "react";
-import { Menu } from "lucide-react"; // nice hamburger icon
+import React from "react";
 
-import { hamburgerMenuLabels } from "../../constants/HamburgerMenuLabels";
+import { useTelemetryStore } from "../../context/TelemetryStore";
+import { useConnection } from "../../context/ConnectedContext";
 
 export default function Bubbles() {
-  // initialize 10 random values
-  const [values, setValues] = useState(
-    Array.from({ length: 10 }, () => Math.floor(Math.random() * 100))
-  );
+  // Get the connection state
+  const { connected } = useConnection();
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const toggleMenu = () => setMenuOpen((open) => !open);
+  // Get the socket that feeds the drone data
+  const telemetry = useTelemetryStore((state) => state.telemetry);
 
   return (
     <div>
-      <div style={styles.contentWrap}>
-        {/* Grid */}
-        <main style={styles.main}>
-          <div style={styles.grid}>
-            {hamburgerMenuLabels.map((lbl, idx) => (
-              <div key={idx} style={styles.box}>
-                <div style={styles.label}>{lbl}</div> {/* NEW label */}
-                <div style={styles.value}>{values[idx]}</div> {/* NEW value */}
+      {!connected ? (
+        <div style={{ fontSize: 25, padding: "4rem 0" }}>
+          Please Connect To Drone For Current Diagnostics
+        </div>
+      ) : (
+        <div style={styles.contentWrap}>
+          <main style={styles.main}>
+            <div style={styles.grid}>
+              <div style={styles.box}>
+                <div style={styles.label}>Altitude</div>
+                {telemetry?.data?.altitude !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.altitude}</div>
+                ) : (
+                  <div>null</div>
+                )}
               </div>
-            ))}
-          </div>
-        </main>
-      </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Speed</div>
+                {telemetry?.data?.speed ? (
+                  <div style={styles.value}>{telemetry.data.speed}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Battery</div>
+                {telemetry?.data?.battery !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.battery}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Heading</div>
+                {telemetry?.data?.heading !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.heading}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>GPS Fix</div>
+                {telemetry?.data?.gpsfix !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.gpsfix}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Signal</div>
+                {telemetry && telemetry.data.signal ? (
+                  <div style={styles.value}>{telemetry.data.signal}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Pitch</div>
+                {telemetry?.data?.pitch !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.pitch}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Roll</div>
+                {telemetry?.data?.roll ? (
+                  <div style={styles.value}>{telemetry.data.roll}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Yaw</div>
+                {telemetry?.data?.yaw !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.yaw}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Satellites</div>
+                {telemetry?.data?.satellites !== undefined ? (
+                  <div style={styles.value}>{telemetry.data.satellites}</div>
+                ) : (
+                  <div>null</div>
+                )}
+              </div>
+            </div>
+          </main>
+        </div>
+      )}
     </div>
   );
 }
