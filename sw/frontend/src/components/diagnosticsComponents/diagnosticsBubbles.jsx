@@ -61,7 +61,7 @@ export default function Bubbles() {
               </div>
 
               <div style={styles.box}>
-                <div style={styles.label}>Altitude</div>
+                <div style={styles.label}>Altitude (MSL)</div>
                 <div style={styles.value}>{lastValues.altitude ?? "null"}</div>
               </div>
 
