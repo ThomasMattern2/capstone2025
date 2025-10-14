@@ -1,5 +1,7 @@
 import React from "react";
 
+import MotoCalcGraph from "../components/aboutComponents/hardwareGraph";
+
 export default function About() {
   // Fake data
   const projectInfo = {
@@ -10,6 +12,7 @@ export default function About() {
     authors: ["Jane Doe", "John Smith"],
     license: "MIT",
     lastUpdated: "September 2025",
+    hardwareDescription: "Graph for hardware analysis",
   };
 
   return (
@@ -32,6 +35,9 @@ export default function About() {
       <div style={styles.infoBlock}>
         <strong>Last Updated:</strong> {projectInfo.lastUpdated}
       </div>
+      <h2 style={styles.title}>Hardware Considerations</h2>
+      <p style={styles.description}>{projectInfo.hardwareDescription}</p>
+      <MotoCalcGraph />
     </div>
   );
 }

@@ -1,0 +1,1120 @@
+{
+  "Model Motors AXI AC2204/54; 1400rpm/V; 0.35A no-load; 0.32 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    },
+    {
+      "Speed": 20,
+      "Thrust": 34.3
+    },
+    {
+      "Speed": 21,
+      "Thrust": 37.9
+    }
+  ],
+  "Model Motors AXI AC2208/20 Silver; 1600rpm/V; 0.9A no-load; 0.093 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    },
+    {
+      "Speed": 20,
+      "Thrust": 34.3
+    },
+    {
+      "Speed": 21,
+      "Thrust": 37.9
+    },
+    {
+      "Speed": 22,
+      "Thrust": 41.5
+    },
+    {
+      "Speed": 23,
+      "Thrust": 45.4
+    },
+    {
+      "Speed": 24,
+      "Thrust": 49.4
+    },
+    {
+      "Speed": 25,
+      "Thrust": 53.6
+    },
+    {
+      "Speed": 26,
+      "Thrust": 58.0
+    }
+  ],
+  "Model Motors AXI AC2208/20; 1820rpm/V; 0.8A no-load; 0.089 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    },
+    {
+      "Speed": 20,
+      "Thrust": 34.3
+    },
+    {
+      "Speed": 21,
+      "Thrust": 37.9
+    },
+    {
+      "Speed": 22,
+      "Thrust": 41.5
+    },
+    {
+      "Speed": 23,
+      "Thrust": 45.4
+    },
+    {
+      "Speed": 24,
+      "Thrust": 49.4
+    },
+    {
+      "Speed": 25,
+      "Thrust": 53.6
+    },
+    {
+      "Speed": 26,
+      "Thrust": 58.0
+    },
+    {
+      "Speed": 27,
+      "Thrust": 62.6
+    },
+    {
+      "Speed": 28,
+      "Thrust": 67.3
+    },
+    {
+      "Speed": 29,
+      "Thrust": 72.2
+    }
+  ],
+  "Model Motors AXI AC2208/26 Silver; 1330rpm/V; 0.7A no-load; 0.17 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    },
+    {
+      "Speed": 20,
+      "Thrust": 34.3
+    },
+    {
+      "Speed": 21,
+      "Thrust": 37.9
+    }
+  ],
+  "Model Motors AXI AC2208/26; 1420rpm/V; 0.6A no-load; 0.155 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    },
+    {
+      "Speed": 20,
+      "Thrust": 34.3
+    },
+    {
+      "Speed": 21,
+      "Thrust": 37.9
+    },
+    {
+      "Speed": 22,
+      "Thrust": 41.5
+    },
+    {
+      "Speed": 23,
+      "Thrust": 45.4
+    }
+  ],
+  "Model Motors AXI AC2208/34 Silver; 1060rpm/V; 0.45A no-load; 0.285 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    }
+  ],
+  "Model Motors AXI AC2208/34; 1100rpm/V; 0.35A no-load; 0.26 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    }
+  ],
+  "Model Motors AXI AC2212/20 Silver; 1120rpm/V; 0.85A no-load; 0.145 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    }
+  ],
+  "Model Motors AXI AC2212/20; 1150rpm/V; 0.7A no-load; 0.135 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    },
+    {
+      "Speed": 17,
+      "Thrust": 24.8
+    },
+    {
+      "Speed": 18,
+      "Thrust": 27.8
+    },
+    {
+      "Speed": 19,
+      "Thrust": 31.0
+    }
+  ],
+  "Model Motors AXI AC2212/26 Silver; 880rpm/V; 0.55A no-load; 0.225 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    }
+  ],
+  "Model Motors AXI AC2212/26; 920rpm/V; 0.45A no-load; 0.21 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 13,
+      "Thrust": 14.5
+    },
+    {
+      "Speed": 14,
+      "Thrust": 16.8
+    },
+    {
+      "Speed": 15,
+      "Thrust": 19.3
+    },
+    {
+      "Speed": 16,
+      "Thrust": 22.0
+    }
+  ],
+  "Model Motors AXI AC2212/34 Silver; 690rpm/V; 0.55A no-load; 0.375 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    }
+  ],
+  "Model Motors AXI AC2212/34; 710rpm/V; 0.4A no-load; 0.345 Ohms.": [
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    },
+    {
+      "Speed": 0,
+      "Thrust": 0.0
+    },
+    {
+      "Speed": 1,
+      "Thrust": 0.1
+    },
+    {
+      "Speed": 2,
+      "Thrust": 0.3
+    },
+    {
+      "Speed": 3,
+      "Thrust": 0.8
+    },
+    {
+      "Speed": 4,
+      "Thrust": 1.4
+    },
+    {
+      "Speed": 5,
+      "Thrust": 2.1
+    },
+    {
+      "Speed": 6,
+      "Thrust": 3.1
+    },
+    {
+      "Speed": 7,
+      "Thrust": 4.2
+    },
+    {
+      "Speed": 8,
+      "Thrust": 5.5
+    },
+    {
+      "Speed": 9,
+      "Thrust": 7.0
+    },
+    {
+      "Speed": 10,
+      "Thrust": 8.6
+    },
+    {
+      "Speed": 11,
+      "Thrust": 10.4
+    },
+    {
+      "Speed": 12,
+      "Thrust": 12.4
+    }
+  ]
+}
