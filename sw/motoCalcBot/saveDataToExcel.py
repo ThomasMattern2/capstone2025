@@ -62,8 +62,8 @@ def parse_motocalc_file(filepath):
     for line in lines:
         if line.startswith("Motor:"):
             data["Motor"] = line.split("Motor:")[1].strip()
-        elif line.startswith("Battery:"):
-            data["Battery"] = line.split("Battery:")[1].strip()
+        elif line.startswith("Drive System:"):
+            data["Drive System"] = line.split("Drive System:")[1].strip()
         elif line.startswith("Speed Control:"):
             data["Speed Control"] = line.split("Speed Control:")[1].strip()
         elif re.match(r"^AirSpd", line):
@@ -118,4 +118,4 @@ print(parse_motocalc_file(txt_files[0]))
 
 for file in txt_files:
     updateExcel = parse_motocalc_file(file)
-    append_data_to_excel(updateExcel, "motocalc_results.xlsx")
+    append_data_to_excel(updateExcel, "motocalc_results2.xlsx")

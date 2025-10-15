@@ -154,13 +154,19 @@ class ClickBot:
         self.click_after_delay(12, 14)         # open motor browser
         self.press_down_after_delay()          # go to next motor
         self.press_enter_after_delay()         # confirm next motor
-        self.highlight_and_copy(10, 12, 2, 12) # highlight and save motor
+        #self.highlight_and_copy(10, 12, 2, 12) # highlight and save motor
         self.click_after_delay(25, 62)         # Compute report
-        self.click_after_delay(44, 54)         # click ok
+        #self.click_after_delay(44, 54)         # click ok
         time.sleep(2)
         print("Needs to maximize")
-        self.maximize.click_if_found() # Maximize the static analysis page
-        time.sleep(6)
+        if not self.maximize.click_if_found(): # Maximize the static analysis page
+            time.sleep(2)
+            self.click_after_delay(44, 54)         # click ok on the warning
+            time.sleep(2)
+            self.maximize.click_if_found()
+
+        time.sleep(3)
+
         self.click_after_delay(50, 50)
         self.press_enter_after_delay()         # press Enter on report
 
@@ -176,7 +182,7 @@ if __name__ == "__main__":
     time.sleep(6)
     bot = ClickBot(delay=1)
     #bot.type("test")
-    for i in range(10):
+    for i in range(25):
         bot.run_motor_sequence()        # center the mouse
         time.sleep(2)
         bot.save_to_csv(i)
