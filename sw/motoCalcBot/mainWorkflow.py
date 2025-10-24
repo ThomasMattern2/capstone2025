@@ -1,7 +1,10 @@
 import pyautogui
 import time
 import platform
+import random
+import uuid
 
+from maximizeSubscreen import ImageClicker
 
 class ClickBot:
     def __init__(self, delay: float = 4.0):
@@ -10,6 +13,14 @@ class ClickBot:
         :param delay: Delay before performing actions (in seconds)
         """
         self.delay = delay
+        self.maximize = ImageClicker()
+
+    def type(self, text, delay=3):
+        """Types the given string after an optional delay."""
+        time.sleep(delay)
+        print("typing name")
+        pyautogui.typewrite(text, interval=0.05)  # interval adds slight realism
+
 
     def click_after_delay(self, x_percent: float, y_percent: float):
         """
@@ -111,17 +122,72 @@ class ClickBot:
 
         print(f"Highlighted from ({start_x}, {start_y}) to ({end_x}, {end_y}) and copied to clipboard.")
 
+    def _delete_current_page(self):
+        """delete the page after a delay"""
+        self.click_after_delay(98.3, 1.2)
+
+    def complete_static_analysis(self):
+        """Use to complete the static analysis page"""
+        self.maximize.click_if_found()
+
+    def save_to_csv(self, index=None):
+        """Use this to save the report to a csv"""
+        print("Use to save the csv to the machine")
+        self.maximize.click_if_found()
+        self.click_after_delay(3.2, 91.5)
+        self.click_after_delay(45, 48.1)
+        time.sleep(3)
+        if True:
+            print("TYPING")
+            self.type(f"{uuid.uuid4()}")
+        else:
+            print("TODO add the configurations here")
+        #self.click_after_delay(60.6, 48.1)
+        self.press_enter_after_delay() 
+        #self._delete_current_page()
+
+
+    def run_motor_sequence(self):
+        """Runs the predefined sequence of clicks and key presses."""
+        self.click_after_delay(50, 50)         # center the mouse
+        self.right_click_after_delay(10, 12)   # left-click on the name
+        self.click_after_delay(12, 14)         # open motor browser
+        self.press_down_after_delay()          # go to next motor
+        self.press_enter_after_delay()         # confirm next motor
+        #self.highlight_and_copy(10, 12, 2, 12) # highlight and save motor
+        self.click_after_delay(25, 62)         # Compute report
+        #self.click_after_delay(44, 54)         # click ok
+        time.sleep(2)
+        print("Needs to maximize")
+        if not self.maximize.click_if_found(): # Maximize the static analysis page
+            time.sleep(2)
+            self.click_after_delay(44, 54)         # click ok on the warning
+            time.sleep(2)
+            self.maximize.click_if_found()
+
+        time.sleep(3)
+
+        self.click_after_delay(50, 50)
+        self.press_enter_after_delay()         # press Enter on report
+
+    def reset_modo_calc(self):
+        """Reset the modo calc by clicking on the side."""
+        self.click_after_delay(90, 50)         # center the mouse
+
+
+
 
 # Example usage
 if __name__ == "__main__":
     time.sleep(6)
     bot = ClickBot(delay=1)
-    bot.click_after_delay(50, 50)        # center the mouse
-    bot.right_click_after_delay(10, 12)  # left-click on the name
-    bot.click_after_delay(12, 14)        # open motor browser
-    bot.press_down_after_delay()         # go to next motor
-    bot.press_enter_after_delay()        # confirm next motor
-    bot.highlight_and_copy(10, 12, 2, 12) # highligt and save motor
-    bot.click_after_delay(25, 62)        # Compute report 
-    bot.click_after_delay(44, 54)        # click ok
-    bot.press_enter_after_delay()        # press Enter on report
+    #bot.type("test")
+    for i in range(25):
+        bot.run_motor_sequence()        # center the mouse
+        time.sleep(2)
+        bot.save_to_csv(i)
+        #break
+        bot._delete_current_page()
+        bot._delete_current_page()
+
+   

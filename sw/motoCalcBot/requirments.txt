@@ -1,1 +1,4 @@
 pyautogui
+plotly
+screeninfo
+opencv-python
