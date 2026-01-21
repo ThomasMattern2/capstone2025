@@ -2,13 +2,48 @@ import React from "react";
 
 import { useTelemetryStore } from "../../context/TelemetryStore";
 import { useConnection } from "../../context/ConnectedContext";
+import { useEffect, useState } from "react";
 
 export default function Bubbles() {
-  // Get the connection state
   const { connected } = useConnection();
-
-  // Get the socket that feeds the drone data
   const telemetry = useTelemetryStore((state) => state.telemetry);
+
+  // Store last valid telemetry values
+  const [lastValues, setLastValues] = useState({});
+
+  useEffect(() => {
+    if (telemetry?.data) {
+      setLastValues((prev) => ({
+        uptime:
+          telemetry.data.time_boot_ms !== undefined ? telemetry.data.time_boot_ms : prev.uptime,
+        altitude:
+          telemetry.data.alt !== undefined ? telemetry.data.alt : prev.altitude,
+        airspeed:
+          telemetry.data.airspeed !== undefined ? telemetry.data.airspeed : prev.airspeed,
+        batteryvoltage:
+          telemetry.data.battery_voltage !== undefined
+            ? telemetry.data.battery_voltage
+            : prev.batteryvoltage,
+        batterycurrent:
+          telemetry.data.battery_current !== undefined
+            ? telemetry.data.battery_current
+            : prev.batterycurrent,
+        batteryremaining:
+          telemetry.data.battery_remaining !== undefined
+            ? telemetry.data.battery_remaining
+            : prev.batteryremaining,
+        heading:
+          telemetry.data.heading !== undefined
+            ? telemetry.data.heading
+            : prev.heading,
+        pitch:
+          telemetry.data.pitch !== undefined ? telemetry.data.pitch : prev.pitch,
+        roll:
+          telemetry.data.roll !== undefined ? telemetry.data.roll : prev.roll,
+        yaw: telemetry.data.yaw !== undefined ? telemetry.data.yaw : prev.yaw,
+      }));
+    }
+  }, [telemetry]);
 
   return (
     <div>
@@ -21,94 +56,55 @@ export default function Bubbles() {
           <main style={styles.main}>
             <div style={styles.grid}>
               <div style={styles.box}>
-                <div style={styles.label}>Altitude</div>
-                {telemetry?.data?.altitude !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.altitude}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.label}>Uptime</div>
+                <div style={styles.value}>{lastValues.uptime ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
-                <div style={styles.label}>Speed</div>
-                {telemetry?.data?.speed ? (
-                  <div style={styles.value}>{telemetry.data.speed}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.label}>Altitude (MSL)</div>
+                <div style={styles.value}>{lastValues.altitude ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
-                <div style={styles.label}>Battery</div>
-                {telemetry?.data?.battery !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.battery}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.label}>Air Speed</div>
+                <div style={styles.value}>{lastValues.airspeed ?? "null"}</div>
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Battery Voltage</div>
+                <div style={styles.value}>{lastValues.batteryvoltage ?? "null"}</div>
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Battery Current</div>
+                <div style={styles.value}>{lastValues.batterycurrent ?? "null"}</div>
+              </div>
+
+              <div style={styles.box}>
+                <div style={styles.label}>Battery Remaining</div>
+                <div style={styles.value}>{lastValues.batteryremaining ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
                 <div style={styles.label}>Heading</div>
-                {telemetry?.data?.heading !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.heading}</div>
-                ) : (
-                  <div>null</div>
-                )}
-              </div>
-
-              <div style={styles.box}>
-                <div style={styles.label}>GPS Fix</div>
-                {telemetry?.data?.gpsfix !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.gpsfix}</div>
-                ) : (
-                  <div>null</div>
-                )}
-              </div>
-
-              <div style={styles.box}>
-                <div style={styles.label}>Signal</div>
-                {telemetry && telemetry.data.signal ? (
-                  <div style={styles.value}>{telemetry.data.signal}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.value}>{lastValues.heading ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
                 <div style={styles.label}>Pitch</div>
-                {telemetry?.data?.pitch !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.pitch}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.value}>{lastValues.pitch ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
                 <div style={styles.label}>Roll</div>
-                {telemetry?.data?.roll ? (
-                  <div style={styles.value}>{telemetry.data.roll}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.value}>{lastValues.roll ?? "null"}</div>
               </div>
 
               <div style={styles.box}>
                 <div style={styles.label}>Yaw</div>
-                {telemetry?.data?.yaw !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.yaw}</div>
-                ) : (
-                  <div>null</div>
-                )}
+                <div style={styles.value}>{lastValues.yaw ?? "null"}</div>
               </div>
 
-              <div style={styles.box}>
-                <div style={styles.label}>Satellites</div>
-                {telemetry?.data?.satellites !== undefined ? (
-                  <div style={styles.value}>{telemetry.data.satellites}</div>
-                ) : (
-                  <div>null</div>
-                )}
-              </div>
             </div>
           </main>
         </div>
@@ -176,6 +172,6 @@ const styles = {
     padding: "0.5rem",
     textAlign: "center",
   },
-  label: { fontSize: "1rem", fontWeight: 600, marginBottom: 4 }, // NEW
-  value: { fontSize: "0.9rem", color: "#444" }, // NEW small value
+  label: { fontSize: "1rem", fontWeight: 600, marginBottom: 4 },
+  value: { fontSize: "0.9rem", color: "#444" },
 };
