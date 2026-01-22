@@ -2,181 +2,110 @@ import sys
 import os
 import asyncio
 import threading
+import serial
+import struct
 
-script_dir = os.path.abspath("./../..")
-sys.path.append(script_dir)
 
-import Scripts.core.initialize as initialize
-import Scripts.core.arm as arm
+def crc8_crsf(data):
+    crc = 0
+    for byte in data:
+        crc ^= byte
+        for _ in range(8):
+            if crc & 0x80:
+                crc = (crc << 1) ^ 0xD5
+            else:
+                crc <<= 1
+            crc &= 0xFF
+    return crc
 
 
 class Vehicle:
-    def __init__(
-        self, socketio=None, vehicle_connection_address="udpin:172.25.176.1:14550"
-    ):
-        self.vehicle_connection = initialize.connect_to_vehicle(
-            vehicle_connection_address
-        )
-        self.verify_connection = initialize.verify_connection(self.vehicle_connection)
+    def __init__(self, socketio=None, port="COM3", baudrate=420000):
+        try:
+            self.ser = serial.Serial(port, baudrate, timeout=0.1)
+            print(f"Connected to Zorro on {port}")
+        except Exception as e:
+            print(f"Serial Error: {e}")
+            self.ser = None
 
-        self.message_queue = asyncio.Queue()
         self.telemetry_queue = asyncio.Queue()
         self.socket = socketio
 
-        # shared state
-        self.lat = 0
-        self.lon = 0
-        self.alt = 0
-        self.rel_alt = 0
+        self.lat, self.lon, self.alt = 0, 0, 0
+        self.pitch, self.yaw, self.roll = 0, 0, 0
+        self.battery_voltage, self.battery_current = 0, 0
+        self.link_quality, self.rssi = 0, 0
 
-        self.pitch = 0
-        self.yaw = 0
-        self.roll = 0
-
-        self.dlat = 0
-        self.dlon = 0
-        self.dalt = 0
-        self.heading = 0
-        self.airspeed = 0
-        self.groundspeed = 0
-        self.throttle = 0
-        self.climb = 0
-        self.rollspeed = 0
-        self.pitchspeed = 0
-        self.yawspeed = 0
-
-        self.num_satellites = 0
-        self.position_uncertainty = 0
-        self.alt_uncertainty = 0
-        self.speed_uncertainty = 0
-        self.heading_uncertainty = 0
-
-        self.flight_mode = 0
-
-        self.battery_voltage = 0
-        self.battery_current = 0
-        self.battery_remaining = 0
-
-    def arm_vehicle(self):
-        return arm.arm(self.vehicle_connection)
-
-    def disarm_vehicle(self):
-        return arm.disarm(self.vehicle_connection)
-
-    # Thead which places messages on various queues and populates
-    def start_mavlink_thread(self, loop: asyncio.AbstractEventLoop):
+    def start_crsf_thread(self, loop: asyncio.AbstractEventLoop):
         thread = threading.Thread(
-            target=self.mavlink_reports_thread_producer, args=(loop,), daemon=True
+            target=self.crsf_receiver_thread, args=(loop,), daemon=True
         )
         thread.start()
 
-    def mavlink_reports_thread_producer(self, loop: asyncio.AbstractEventLoop):
+    def crsf_receiver_thread(self, loop: asyncio.AbstractEventLoop):
+        buffer = bytearray()
         while True:
-            msg = self.vehicle_connection.recv_match(blocking=True)
-            if msg:
-                asyncio.run_coroutine_threadsafe(self.message_queue.put(msg), loop)
+            if not self.ser:
+                break
+            data = self.ser.read(100)
+            if data:
+                buffer.extend(data)
 
-    async def multiplexing_layer(self, loop: asyncio.AbstractEventLoop):
-        while True:
-            msg = await self.message_queue.get()
-            msg_type = msg.get_type()
+            while len(buffer) >= 3:
+                if buffer[0] == 0xC8:
+                    length = buffer[1]
+                    if len(buffer) < length + 2:
+                        break
 
-            if msg_type == "GLOBAL_POSITION_INT":
-                self.lat = msg.lat * 1.0e-7
-                self.lon = msg.lon * 1.0e-7
-                self.alt = msg.alt / 1000
-                self.rel_alt = msg.relative_alt / 1000
-                self.dlat = msg.vx / 100
-                self.dlon = msg.vy / 100
-                self.dalt = msg.vz / 100
-                self.heading = msg.hdg / 100
-                self.time_boot_ms = msg.time_boot_ms
+                    frame = buffer[: length + 2]
+                    payload = frame[2:-1]
+                    frame_type = payload[0]
 
-            elif msg_type == "ATTITUDE":
-                self.roll = msg.roll
-                self.pitch = msg.pitch
-                self.yaw = msg.yaw
-                self.rollspeed = msg.rollspeed
-                self.pitchspeed = msg.pitchspeed
-                self.yawspeed = msg.yawspeed
-                self.time_boot_ms = msg.time_boot_ms
+                    if crc8_crsf(frame[2:-1]) == frame[-1]:
+                        self.process_crsf_frame(frame_type, payload[1:], loop)
 
-            elif msg_type == "VFR_HUD":
-                self.airspeed = msg.airspeed
-                self.groundspeed = msg.groundspeed
-                self.heading = msg.heading
-                self.throttle = msg.throttle
-                self.alt = msg.alt
-                self.climb = msg.climb
+                    del buffer[: length + 2]
+                else:
+                    buffer.pop(0)
 
-            elif msg_type == "HEARTBEAT":
-                self.flight_mode = msg.custom_mode
+    def process_crsf_frame(self, frame_type, data, loop):
+        if frame_type == 0x08:
+            v, i, cap, rem = struct.unpack(">HHIB", data)
+            self.battery_voltage = v / 10.0
+            self.battery_current = i / 10.0
+            asyncio.run_coroutine_threadsafe(
+                self.telemetry_queue.put(
+                    {
+                        "type": "BATTERY",
+                        "data": {
+                            "voltage": self.battery_voltage,
+                            "current": self.battery_current,
+                        },
+                    }
+                ),
+                loop,
+            )
 
-            elif msg_type == "SYS_STATUS":
-                self.battery_voltage = msg.voltage_battery
-                self.battery_current = msg.current_battery
-                self.battery_remaining = msg.battery_remaining
+        elif frame_type == 0x1E:
+            p, r, y = struct.unpack(">hhh", data)
+            self.pitch, self.roll, self.yaw = p / 10000, r / 10000, y / 10000
+            asyncio.run_coroutine_threadsafe(
+                self.telemetry_queue.put(
+                    {
+                        "type": "ATTITUDE",
+                        "data": {
+                            "pitch": self.pitch,
+                            "roll": self.roll,
+                            "yaw": self.yaw,
+                        },
+                    }
+                ),
+                loop,
+            )
 
-            if msg:
-                # add various consumer threads here
-                asyncio.run_coroutine_threadsafe(self.telemetry_queue.put(msg), loop)
-
-            self.message_queue.task_done()
-
-    # Telemetry consumer that sends vehicle data through websocket
     async def telemetry_consumer(self):
         while True:
             msg = await self.telemetry_queue.get()
-            print(msg)
-            msg_type = msg.get_type()
-            data = None
-
-            if msg_type == "GLOBAL_POSITION_INT":
-                data = {
-                    "time_boot_ms": msg.time_boot_ms,
-                    "lat": msg.lat * 1.0e-7,
-                    "lon": msg.lon * 1.0e-7,
-                    "alt": msg.alt / 1000,
-                    "relative_alt": msg.relative_alt / 1000,
-                    "vx": msg.vx / 100,
-                    "vy": msg.vy / 100,
-                    "vz": msg.vz / 100,
-                    "hdg": msg.hdg / 100,
-                }
-
-            elif msg_type == "ATTITUDE":
-                data = {
-                    "time_boot_ms": msg.time_boot_ms,
-                    "roll": msg.roll,
-                    "pitch": msg.pitch,
-                    "yaw": msg.yaw,
-                    "rollspeed": msg.rollspeed,
-                    "pitchspeed": msg.pitchspeed,
-                    "yawspeed": msg.yawspeed,
-                }
-
-            elif msg_type == "VFR_HUD":
-                data = {
-                    "airspeed": msg.airspeed,
-                    "groundspeed": msg.groundspeed,
-                    "heading": msg.heading,
-                    "throttle": msg.throttle,
-                    "alt": msg.alt,
-                    "climb": msg.climb,
-                }
-
-            elif msg_type == "HEARTBEAT":
-                data = {"flight_mode": msg.custom_mode}
-                self.flight_mode = msg.custom_mode
-
-            elif msg_type == "SYS_STATUS":
-                data = {
-                    "battery_voltage": msg.voltage_battery,
-                    "battery_current": msg.current_battery,
-                    "battery_remaining": msg.battery_remaining,
-                }
-
-            if data and self.socket:
-                self.socket.emit("vehicle_state", {"type": msg_type, "data": data})
-
+            if self.socket:
+                self.socket.emit("vehicle_state", msg)
             self.telemetry_queue.task_done()
