@@ -5,10 +5,12 @@ import os
 import sys
 import asyncio
 
+# Setup path to find Scripts directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, ".."))
 sys.path.insert(0, project_root)
 
+# Import the TelemetryHandler
 from Scripts.core.vehicle import TelemetryHandler
 
 app = Flask(__name__)
