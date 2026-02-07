@@ -1,28 +1,15 @@
-import logo from "./logo.svg";
-import "./App.css";
-
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import Header from "./components/Header";
+import React, { useEffect } from "react";
 import Diagnostics from "./pages/DiagnosticsPage";
-import About from "./pages/AboutPage";
-import Display from "./pages/DisplayPage";
+import { useTelemetryStore } from "./context/TelemetryStore";
 
 function App() {
-  return (
-    <Router>
-      <Header />
-      <div style={{ padding: "1rem" }}>
-        <Routes>
-          <Route path="/" element={<Display />} />
-          <Route path="/display" element={<Display />} />
-          <Route path="/diagnostics" element={<Diagnostics />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
-    </Router>
-  );
+  const init = useTelemetryStore((state) => state.init);
+
+  useEffect(() => {
+    init(); // Connect to Socket.io on load
+  }, [init]);
+
+  return <Diagnostics />;
 }
 
 export default App;

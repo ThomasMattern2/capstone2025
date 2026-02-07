@@ -1,7 +1,5 @@
-from flask import Flask, jsonify, request, Response
-from flask_cors import CORS
-from flask_socketio import SocketIO, send, emit
-import time
+from flask import Flask
+from flask_socketio import SocketIO
 import threading
 import os
 import sys
@@ -11,23 +9,32 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, ".."))
 sys.path.insert(0, project_root)
 
-from Scripts.core.vehicle import *
+from Scripts.core.vehicle import TelemetryHandler
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-vehicle = Vehicle(socketio, port="COM3", baudrate=420000)
+vehicle = TelemetryHandler(port="COM5", baudrate=420000)
 
 
-def start_vehicle_loop():
+async def bridge():
+    while True:
+        try:
+            msg = await vehicle.telemetry_queue.get()
+            socketio.emit("vehicle_state", msg)
+            vehicle.telemetry_queue.task_done()
+        except Exception:
+            await asyncio.sleep(0.1)
+
+
+def start_loop():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-
-    vehicle.start_crsf_thread(loop)
-    loop.create_task(vehicle.telemetry_consumer())
+    vehicle.start(loop)
+    loop.create_task(bridge())
     loop.run_forever()
 
 
 if __name__ == "__main__":
-    threading.Thread(target=start_vehicle_loop, daemon=True).start()
+    threading.Thread(target=start_loop, daemon=True).start()
     socketio.run(app, host="0.0.0.0", port=5000)
