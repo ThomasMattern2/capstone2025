@@ -4,6 +4,7 @@ import threading
 import os
 import sys
 import asyncio
+import json
 
 # Setup path to find Scripts directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +17,23 @@ from Scripts.core.vehicle import TelemetryHandler
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-vehicle = TelemetryHandler(port="COM5", baudrate=420000)
+config = {"port": "COM5", "baudrate": 420000}
+
+config_path = os.path.join(script_dir, "config.json")
+
+if os.path.exists(config_path):
+    try:
+        with open(config_path, "r") as f:
+            user_config = json.load(f)
+            config.update(user_config)
+            print(f"Configuration loaded from {config_path}")
+    except Exception as e:
+        print(f"Warning: Could not load config.json, using defaults. Error: {e}")
+else:
+    print(f"No config.json found at {config_path}, using default settings.")
+
+vehicle = TelemetryHandler(port=config["port"], baudrate=config["baudrate"])
+# ---------------------------
 
 
 async def bridge():
@@ -39,4 +56,5 @@ def start_loop():
 
 if __name__ == "__main__":
     threading.Thread(target=start_loop, daemon=True).start()
-    socketio.run(app, host="0.0.0.0", port=5000)
+    # Updated to fix RuntimeError
+    socketio.run(app, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)

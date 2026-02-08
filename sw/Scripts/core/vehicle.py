@@ -39,14 +39,9 @@ class TelemetryHandler:
 
         print(f"DEBUG: Logging to {self.csv_filename}")
 
-        # --- SERIAL SETUP ---
-        try:
-            self.ser = serial.Serial(port, baudrate, timeout=0.1)
-            print(f"DEBUG: Connected to {port}")
-        except Exception as e:
-            print(f"DEBUG: Connection Error: {e}")
-            self.ser = None
-
+        self.port = port
+        self.baudrate = baudrate
+        self.ser = None
         self.telemetry_queue = asyncio.Queue()
 
         self.state = {
@@ -58,6 +53,12 @@ class TelemetryHandler:
             "flight_mode": "UNKNOWN",
         }
 
+    def start(self, loop):
+        thread = threading.Thread(
+            target=self._receiver_thread, args=(loop,), daemon=True
+        )
+        thread.start()
+
     def _log_to_csv(self, msg_type, data_dict):
         """Helper to append data to CSV"""
         try:
@@ -67,46 +68,62 @@ class TelemetryHandler:
         except Exception:
             pass
 
-    def start(self, loop):
-        thread = threading.Thread(
-            target=self._receiver_thread, args=(loop,), daemon=True
-        )
-        thread.start()
-
     def _receiver_thread(self, loop):
         buffer = bytearray()
-        while self.ser and self.ser.is_open:
+
+        while True:
+            # 1. Try to Connect if not connected
+            if self.ser is None or not self.ser.is_open:
+                try:
+                    self.ser = serial.Serial(self.port, self.baudrate, timeout=0.1)
+                    print(f"DEBUG: Successfully connected to {self.port}")
+                    buffer = bytearray()  # Clear buffer on new connection
+                except Exception as e:
+                    # Wait before retrying to avoid spamming logs
+                    time.sleep(2)
+                    continue
+
+            # 2. Read and Parse Data
             try:
-                data = self.ser.read(100)
-                if data:
-                    buffer.extend(data)
+                if self.ser.in_waiting > 0:
+                    data = self.ser.read(100)
+                    if data:
+                        buffer.extend(data)
 
-                while len(buffer) >= 2:
-                    if buffer[0] not in [0xC8, 0xEA, 0xEE]:
-                        buffer.pop(0)
-                        continue
+                    # --- Parsing Logic (Same as before) ---
+                    while len(buffer) >= 2:
+                        if buffer[0] not in [0xC8, 0xEA, 0xEE]:
+                            buffer.pop(0)
+                            continue
 
-                    length = buffer[1]
-                    if length > 64 or length < 2:
-                        buffer.pop(0)
-                        continue
+                        length = buffer[1]
+                        if length > 64 or length < 2:
+                            buffer.pop(0)
+                            continue
 
-                    if len(buffer) < length + 2:
-                        break
+                        if len(buffer) < length + 2:
+                            break
 
-                    frame = buffer[: length + 2]
-                    payload = frame[2:-1]
-                    frame_type = payload[0]
-                    frame_data = payload[1:]
+                        frame = buffer[: length + 2]
+                        payload = frame[2:-1]
+                        frame_type = payload[0]
+                        frame_data = payload[1:]
 
-                    if crc8_crsf(payload) == frame[-1]:
-                        self._parse_frame(frame_type, frame_data, loop)
-                        del buffer[: length + 2]
-                    else:
-                        buffer.pop(0)
+                        if crc8_crsf(payload) == frame[-1]:
+                            self._parse_frame(frame_type, frame_data, loop)
+                            del buffer[: length + 2]
+                        else:
+                            buffer.pop(0)
+                else:
+                    # Sleep slightly if no data to reduce CPU usage
+                    time.sleep(0.01)
+
             except Exception as e:
-                print(f"DEBUG: Loop Error: {e}")
-                break
+                print(f"DEBUG: Serial Error (Disconnecting): {e}")
+                if self.ser:
+                    self.ser.close()
+                self.ser = None
+                time.sleep(1)
 
     def _parse_frame(self, frame_type, data, loop):
         try:

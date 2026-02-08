@@ -20,9 +20,12 @@
     "web-vitals": "^2.1.4",
     "zustand": "^5.0.8"
   },
-  "scripts": {
+"scripts": {
     "start": "react-scripts start",
-    "startboth": "concurrently \"cd ../backend && python server.py\" \"react-scripts start\"",
+    "startboth": "concurrently \"npm:run-server\" \"npm:start\"",
+    "run-server": "cd ../.. && .venv\\Scripts\\activate && python sw\\Server\\server.py",
+    "startboth:wsl": "concurrently \"npm:run-server:wsl\" \"npm:start\"",
+    "run-server:wsl": "cd ../.. && source .venv/bin/activate && python sw/Server/server.py",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -44,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
