@@ -65,3 +65,14 @@ npm run startboth
 
 ---
 
+## Dashboard Alerts
+
+The dashboard features a **Safety Alert System** that triggers a red warning banner if the drone exceeds critical safety limits. These thresholds are defined in `src/context/TelemetryStore.jsx` and are based on the design specifications:
+
+* **⚠️ CRITICAL: NO HEARTBEAT**: Triggered if no telemetry packet is received for **2 seconds**.
+* **⚠️ LOW BATTERY**: Triggered if voltage drops below **39.6V** (3.3V per cell on 12S LiPo).
+* **⚠️ HIGH CURRENT**: Triggered if current draw exceeds **280A**.
+* **⚠️ POOR LINK QUALITY**: Triggered if Crossfire Link Quality (LQ) drops below **95%**.
+* **⚠️ ALTITUDE WARNING**: Triggered if altitude is **below 20m** or **above 120m** (Geofence safety). *Note: This alert is only active when a valid 3D GPS fix is established.*
+
+---

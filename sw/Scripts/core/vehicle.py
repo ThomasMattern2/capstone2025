@@ -39,10 +39,14 @@ class TelemetryHandler:
 
         print(f"DEBUG: Logging to {self.csv_filename}")
 
+        # --- SERIAL CONFIG ---
         self.port = port
         self.baudrate = baudrate
         self.ser = None
         self.telemetry_queue = asyncio.Queue()
+
+        # AGL Logic: Store home altitude
+        self.home_altitude = None
 
         self.state = {
             "battery": {"voltage": 0, "current": 0, "capacity": 0, "remaining": 0},
@@ -53,12 +57,6 @@ class TelemetryHandler:
             "flight_mode": "UNKNOWN",
         }
 
-    def start(self, loop):
-        thread = threading.Thread(
-            target=self._receiver_thread, args=(loop,), daemon=True
-        )
-        thread.start()
-
     def _log_to_csv(self, msg_type, data_dict):
         """Helper to append data to CSV"""
         try:
@@ -68,29 +66,32 @@ class TelemetryHandler:
         except Exception:
             pass
 
+    def start(self, loop):
+        thread = threading.Thread(
+            target=self._receiver_thread, args=(loop,), daemon=True
+        )
+        thread.start()
+
     def _receiver_thread(self, loop):
         buffer = bytearray()
-
         while True:
-            # 1. Try to Connect if not connected
+            # 1. Try to Connect
             if self.ser is None or not self.ser.is_open:
                 try:
                     self.ser = serial.Serial(self.port, self.baudrate, timeout=0.1)
                     print(f"DEBUG: Successfully connected to {self.port}")
-                    buffer = bytearray()  # Clear buffer on new connection
+                    buffer = bytearray()
                 except Exception as e:
-                    # Wait before retrying to avoid spamming logs
-                    time.sleep(2)
+                    time.sleep(2)  # Wait before retrying
                     continue
 
-            # 2. Read and Parse Data
+            # 2. Read and Parse
             try:
                 if self.ser.in_waiting > 0:
                     data = self.ser.read(100)
                     if data:
                         buffer.extend(data)
 
-                    # --- Parsing Logic (Same as before) ---
                     while len(buffer) >= 2:
                         if buffer[0] not in [0xC8, 0xEA, 0xEE]:
                             buffer.pop(0)
@@ -115,7 +116,6 @@ class TelemetryHandler:
                         else:
                             buffer.pop(0)
                 else:
-                    # Sleep slightly if no data to reduce CPU usage
                     time.sleep(0.01)
 
             except Exception as e:
@@ -157,7 +157,7 @@ class TelemetryHandler:
             # 0x14: LINK STATISTICS
             elif frame_type == 0x14:
                 uplink_rssi = data[0] if data[0] < 128 else data[0] - 256
-                lq = data[2]  # Link Quality is usually byte index 2
+                lq = data[2]
                 payload = {"rssi": uplink_rssi, "lq": lq}
                 self.state["link"] = payload
                 self._log_to_csv("LINK", payload)
@@ -166,10 +166,20 @@ class TelemetryHandler:
             # 0x02: GPS
             elif frame_type == 0x02:
                 lat, lon, gs, hdg, alt, sats = struct.unpack(">iiHHHB", data)
+
+                # AGL LOGIC
+                if self.home_altitude is None and sats >= 4:
+                    self.home_altitude = alt
+                    print(f"DEBUG: Home Altitude Set: {alt}m")
+
+                agl = (
+                    (alt - self.home_altitude) if self.home_altitude is not None else 0
+                )
+
                 payload = {
                     "lat": lat / 1e7,
                     "lon": lon / 1e7,
-                    "alt": alt - 1000,
+                    "alt": agl,  # Sending AGL
                     "sats": sats,
                     "gs": gs,
                     "hdg": hdg / 100.0,
