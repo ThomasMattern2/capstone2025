@@ -1,104 +1,116 @@
 import React, { useEffect, useRef, useState } from "react";
 import mpegts from "mpegts.js";
 
-// --- IMPORT YOUR LOCAL VIDEO HERE ---
-import localVideo from "../../assets/sim_video.mp4"; 
-
 export default function VideoFeed() {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
-  const [deviceMode, setDeviceMode] = useState("sim"); // "sim", "stream", or "cam"
+  const mediaRecorderRef = useRef(null);
   const [error, setError] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const chunks = useRef([]);
 
-  // Cleanup player on unmount or mode change
   useEffect(() => {
+    if (mpegts.getFeatureList().mseLivePlayback) {
+      const player = mpegts.createPlayer({
+        type: 'flv',
+        isLive: true,
+        url: 'http://localhost:8000/live/drone.flv', 
+        hasAudio: false,
+      });
+
+      player.attachMediaElement(videoRef.current);
+      player.load();
+      player.play().catch(e => console.error("Autoplay blocked:", e));
+      
+      playerRef.current = player;
+
+      player.on(mpegts.Events.ERROR, (e) => {
+          console.error("Stream Error:", e);
+          setError("Drone stream offline or connection failed.");
+      });
+    }
+
     return () => {
       if (playerRef.current) {
         playerRef.current.destroy();
         playerRef.current = null;
       }
     };
-  }, [deviceMode]);
+  }, []);
 
-  useEffect(() => {
-    if (deviceMode === "stream") {
-      // --- RTMP/FLV STREAM MODE ---
-      if (mpegts.getFeatureList().mseLivePlayback) {
-        const player = mpegts.createPlayer({
-          type: 'flv',
-          isLive: true,
-          url: 'http://localhost:8000/live/drone.flv', // Connects to your new Node script
-          hasAudio: false,
-        });
+  const startRecording = () => {
+    let stream = null;
 
-        player.attachMediaElement(videoRef.current);
-        player.load();
-        player.play().catch(e => console.error("Autoplay blocked:", e));
-        
-        playerRef.current = player;
-
-        player.on(mpegts.Events.ERROR, (e) => {
-            console.error("Stream Error:", e);
-            setError("Stream offline or connection failed.");
-        });
-      }
-    } else if (deviceMode === "cam") {
-      // --- WEBCAM MODE ---
-      async function startCam() {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-          if (videoRef.current) videoRef.current.srcObject = stream;
-          setError("");
-        } catch (err) {
-          setError("Webcam access denied.");
-        }
-      }
-      startCam();
+    if (videoRef.current.captureStream) {
+      stream = videoRef.current.captureStream();
+    } else if (videoRef.current.mozCaptureStream) {
+      stream = videoRef.current.mozCaptureStream();
     }
-    // "sim" mode is handled by the video tag attributes directly
-  }, [deviceMode]);
+
+    if (!stream || (stream.getTracks && stream.getTracks().length === 0)) {
+      setError("No active drone stream to record.");
+      return;
+    }
+
+    try {
+      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.current.push(e.data);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunks.current, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `drone_flight_${Date.now()}.webm`;
+        a.click();
+        chunks.current = [];
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      setError("");
+    } catch (e) {
+      setError("Local recording not supported in this browser.");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
 
   return (
     <div style={styles.container}>
       <div style={styles.headerRow}>
-        <h3 style={styles.title}>FPV Feed</h3>
+        <h3 style={styles.title}>Live Drone Feed</h3>
         
-        <select 
-          style={styles.select} 
-          value={deviceMode} 
-          onChange={(e) => {
-            setError("");
-            setDeviceMode(e.target.value);
-          }}
+        <button 
+            onClick={isRecording ? stopRecording : startRecording}
+            style={{
+                ...styles.recordButton, 
+                backgroundColor: isRecording ? "#ff4d4d" : "#2ecc71"
+            }}
         >
-          <option value="sim">🧪 Simulation</option>
-          <option value="stream">📡 Live Drone Stream (RTMP)</option>
-          <option value="cam">📷 Local Webcam</option>
-        </select>
+            {isRecording ? "Stop Local Rec" : "Start Local Rec"}
+        </button>
       </div>
 
       <div style={styles.videoWrapper}>
-        {deviceMode === "sim" ? (
-          <video
-            src={localVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{...styles.video, objectFit: "cover"}} 
+        <div style={{width: '100%', height: '100%', position: 'relative'}}>
+          {error && <div style={styles.errorOverlay}>{error}</div>}
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            muted 
+            style={styles.video} 
           />
-        ) : (
-          <div style={{width: '100%', height: '100%', position: 'relative'}}>
-            {error && <div style={styles.errorOverlay}>{error}</div>}
-            <video 
-              ref={videoRef} 
-              autoPlay 
-              playsInline 
-              muted 
-              style={styles.video} 
-            />
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
@@ -129,14 +141,15 @@ const styles = {
     fontWeight: "bold",
     letterSpacing: "1px"
   },
-  select: {
-    backgroundColor: "#333",
-    color: "#fff",
-    border: "1px solid #555",
+  recordButton: {
+    border: "none",
     borderRadius: "5px",
-    padding: "5px",
+    color: "#fff",
+    padding: "5px 12px",
+    cursor: "pointer",
     fontSize: "0.8rem",
-    maxWidth: "200px"
+    fontWeight: "bold",
+    transition: "background-color 0.2s"
   },
   videoWrapper: {
     flex: 1,
@@ -159,6 +172,8 @@ const styles = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     color: '#e74c3c', fontWeight: 'bold',
     backgroundColor: 'rgba(0,0,0,0.7)',
-    zIndex: 10
+    zIndex: 10,
+    textAlign: 'center',
+    padding: '20px'
   }
 };
