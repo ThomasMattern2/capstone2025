@@ -1,61 +1,62 @@
 import React, { useEffect, useRef, useState } from "react";
+import mpegts from "mpegts.js";
 
 // --- IMPORT YOUR LOCAL VIDEO HERE ---
-// This tells React to bundle this specific file
 import localVideo from "../../assets/sim_video.mp4"; 
 
 export default function VideoFeed() {
   const videoRef = useRef(null);
-  const [devices, setDevices] = useState([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState("sim"); // Default to Sim
+  const playerRef = useRef(null);
+  const [deviceMode, setDeviceMode] = useState("sim"); // "sim", "stream", or "cam"
   const [error, setError] = useState("");
 
-  // 1. Get List of Cameras
+  // Cleanup player on unmount or mode change
   useEffect(() => {
-    async function getCameras() {
-      try {
-        await navigator.mediaDevices.getUserMedia({ video: true });
-        const allDevices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = allDevices.filter(device => device.kind === "videoinput");
-        
-        const options = [
-          { deviceId: "sim", label: "🧪 Simulation (Local File)" },
-          ...videoDevices
-        ];
-        
-        setDevices(options);
-      } catch (err) {
-        console.error("Camera Error:", err);
-        setDevices([{ deviceId: "sim", label: "🧪 Simulation (Local File)" }]);
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+        playerRef.current = null;
       }
-    }
-    getCameras();
-  }, []);
+    };
+  }, [deviceMode]);
 
   useEffect(() => {
-    if (selectedDeviceId === "sim") return; 
-
-    async function startStream() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { 
-            deviceId: { exact: selectedDeviceId },
-            width: { ideal: 1280 }, 
-            height: { ideal: 720 } 
-          }
+    if (deviceMode === "stream") {
+      // --- RTMP/FLV STREAM MODE ---
+      if (mpegts.getFeatureList().mseLivePlayback) {
+        const player = mpegts.createPlayer({
+          type: 'flv',
+          isLive: true,
+          url: 'http://localhost:8000/live/drone.flv', // Connects to your new Node script
+          hasAudio: false,
         });
+
+        player.attachMediaElement(videoRef.current);
+        player.load();
+        player.play().catch(e => console.error("Autoplay blocked:", e));
         
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-        setError("");
-      } catch (err) {
-        console.error("Stream Error:", err);
-        setError("Could not start video stream.");
+        playerRef.current = player;
+
+        player.on(mpegts.Events.ERROR, (e) => {
+            console.error("Stream Error:", e);
+            setError("Stream offline or connection failed.");
+        });
       }
+    } else if (deviceMode === "cam") {
+      // --- WEBCAM MODE ---
+      async function startCam() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (videoRef.current) videoRef.current.srcObject = stream;
+          setError("");
+        } catch (err) {
+          setError("Webcam access denied.");
+        }
+      }
+      startCam();
     }
-    startStream();
-  }, [selectedDeviceId]);
+    // "sim" mode is handled by the video tag attributes directly
+  }, [deviceMode]);
 
   return (
     <div style={styles.container}>
@@ -64,21 +65,22 @@ export default function VideoFeed() {
         
         <select 
           style={styles.select} 
-          value={selectedDeviceId} 
-          onChange={(e) => setSelectedDeviceId(e.target.value)}
+          value={deviceMode} 
+          onChange={(e) => {
+            setError("");
+            setDeviceMode(e.target.value);
+          }}
         >
-          {devices.map((device) => (
-            <option key={device.deviceId} value={device.deviceId}>
-              {device.label || `Camera ${device.deviceId.slice(0,5)}...`}
-            </option>
-          ))}
+          <option value="sim">🧪 Simulation</option>
+          <option value="stream">📡 Live Drone Stream (RTMP)</option>
+          <option value="cam">📷 Local Webcam</option>
         </select>
       </div>
 
       <div style={styles.videoWrapper}>
-        {selectedDeviceId === "sim" ? (
+        {deviceMode === "sim" ? (
           <video
-            src={localVideo} // Uses the imported file
+            src={localVideo}
             autoPlay
             loop
             muted
@@ -86,10 +88,8 @@ export default function VideoFeed() {
             style={{...styles.video, objectFit: "cover"}} 
           />
         ) : (
-          // --- REAL CAMERA MODE ---
-          error ? (
-            <div style={styles.error}>{error}</div>
-          ) : (
+          <div style={{width: '100%', height: '100%', position: 'relative'}}>
+            {error && <div style={styles.errorOverlay}>{error}</div>}
             <video 
               ref={videoRef} 
               autoPlay 
@@ -97,7 +97,7 @@ export default function VideoFeed() {
               muted 
               style={styles.video} 
             />
-          )
+          </div>
         )}
       </div>
     </div>
@@ -153,8 +153,12 @@ const styles = {
     height: "100%",
     objectFit: "contain"
   },
-  error: {
-    color: "#e74c3c",
-    fontWeight: "bold"
+  errorOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    color: '#e74c3c', fontWeight: 'bold',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    zIndex: 10
   }
 };

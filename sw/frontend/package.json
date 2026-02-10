@@ -10,6 +10,8 @@
     "hls.js": "^1.6.12",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
+    "mpegts.js": "^1.7.3",
+    "node-media-server": "^4.2.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-leaflet": "^5.0.0",
@@ -20,10 +22,12 @@
     "web-vitals": "^2.1.4",
     "zustand": "^5.0.8"
   },
-"scripts": {
+  "scripts": {
     "start": "react-scripts start",
     "startboth": "concurrently \"npm:run-server\" \"npm:start\"",
+    "startall": "concurrently \"npm:run-server\" \"npm:run-media\" \"npm:start\"",
     "run-server": "cd ../.. && .venv\\Scripts\\activate && python sw\\Server\\server.py",
+    "run-media": "node src/media_server.js",
     "startboth:wsl": "concurrently \"npm:run-server:wsl\" \"npm:start\"",
     "run-server:wsl": "cd ../.. && source .venv/bin/activate && python sw/Server/server.py",
     "build": "react-scripts build",
