@@ -61,7 +61,9 @@ We have configured a single command to launch both the Python backend (using the
 2. Run the start command:
 
 **Windows:**
-npm run startboth
+npm run startall
+
+When streaming remember to change the address to IPv4 address in ipconfig 
 
 ---
 
